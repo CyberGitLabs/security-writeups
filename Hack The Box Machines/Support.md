@@ -65,6 +65,6 @@ I tried to look up the groups which our user is a member of and as we can see th
 
 ![diagram](../images/Support/Support_support_groups.png)
 
-So our user has *GenericAll* permission over the DC computer account, through inheritance.
+So our user has *GenericAll* permission over the DC computer account, through group membership.
 
 
