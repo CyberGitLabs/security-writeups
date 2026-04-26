@@ -43,7 +43,7 @@ But we can use the credentials to run authenticated ldap queries:
 
 ![diagram](../images/Support/Support_ldapsearch.png)
 
-We found anew password, let's spray again, (we could have avoided spraying a second time querying also samaccountname with ldap):
+We found a new password, let's spray again, (we could have avoided spraying a second time querying also samaccountname with ldap):
 
 ![diagram](../images/Support/Support_spry2.png)
 
