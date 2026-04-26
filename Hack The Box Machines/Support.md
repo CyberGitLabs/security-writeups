@@ -38,7 +38,7 @@ Once we found the password i retrieved the list of users with rid-brute and then
 
 ![diagram](../images/Support/Support_spry1.png)
 
-So the password belongs to the ldap user. We don't have command execution yet as this user cannot access remotely.
+So the password belongs to the *ldap* user. We don't have command execution yet as this user cannot access remotely.
 But we can use the credentials to run authenticated ldap queries:
 
 ![diagram](../images/Support/Support_ldapsearch.png)
