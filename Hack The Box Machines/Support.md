@@ -50,3 +50,17 @@ We found a new password, let's spray again, (we could have avoided spraying a se
 Now we have the credentials for the support user, and command execution:
 
 ![diagram](../images/Support/Support_shell.png)
+
+*******3 Privilege Escalation*******
+The first thing i did now was to check the user characteristics:
+
+![diagram](../images/Support/Support_support_user.png)
+
+The user had the privilege to add machines to the domain. This can be abused for privilege escalation through Resource-Based Constrained Delegation (RBCD) if the user also has write permissions over a target computer object in Active Directory. So in this case we should check if the user has write permission on the dc. I tried to query ACL using the user SID, but that didn't give any results. So i tried to query wfor ACL related to the *dc* computer object.
+
+![diagram](../images/Support/Support_DC_ACL.png)
+
+We can see that an object with RID 1103 has *GenericAll* permission over the *dc* computer object. Since objects with RID > 1000 are generally user defined we should inspect what this object is.
+I tried to look to the groups of the *support* user and as we can see the group *Shared Support Accounts* is the object we were searching for. So our user has *GenericAll* through inheritance.
+
+
