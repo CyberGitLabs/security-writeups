@@ -56,7 +56,7 @@ The first thing i did now was to check the user characteristics:
 
 ![diagram](../images/Support/Support_support_user.png)
 
-The user had the privilege to add machines to the domain. This can be abused for privilege escalation through Resource-Based Constrained Delegation (RBCD) if the user also has write permissions over a target computer object in Active Directory. So in this case we should check if the user has write permission on the dc. I tried to query ACL using the user SID, but that didn't give any results. So i tried to query wfor ACL related to the *dc* computer object.
+The user had the privilege to add machines to the domain. This can be abused for privilege escalation through Resource-Based Constrained Delegation (RBCD) if the user also has write permissions over a target computer object in Active Directory. So in this case we should check if the user has write permission on the *dc*. I tried to query ACL using the user SID, but that didn't give any results. So i tried to query for ACL related to the *dc* computer object.
 
 ![diagram](../images/Support/Support_DC_ACL.png)
 
