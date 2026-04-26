@@ -6,7 +6,7 @@ Support is an HTB Windows machine classified as Easy.
 
 ![diagram](../images/Support/Support_nmap1.png)
 
-![diagram](../images/Support/Support_nmap1.png)
+![diagram](../images/Support/Support_nmap2.png)
 
 From the running services we can say that this is a domain controller.
 
