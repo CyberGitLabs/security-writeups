@@ -32,6 +32,21 @@ So i made the AI generate a script to copy this logic:
 
 ![diagram](../images/Support/Support_script2.png)
 
-Once we found a password i retrieved the list of users with rid-brute and then sprayed to retrieve the pair:
+Once we found the password i retrieved the list of users with rid-brute and then sprayed to retrieve the pair:
 
 ![diagram](../images/Support/Support_users.png)
+
+![diagram](../images/Support/Support_spry1.png)
+
+So the password belongs to the ldap user. We don't have command execution yet as this user cannot access remotely.
+But we can use the credentials to run authenticated ldap queries:
+
+![diagram](../images/Support/Support_ldapsearch.png)
+
+We found anew password, let's spray again, (we could have avoided spraying a second time querying also samaccountname with ldap):
+
+![diagram](../images/Support/Support_spry2.png)
+
+Now we have the credentials for the support user, and command execution:
+
+![diagram](../images/Support/Support_shell.png)
