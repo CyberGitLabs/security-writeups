@@ -61,6 +61,10 @@ The user had the privilege to add machines to the domain. This can be abused for
 ![diagram](../images/Support/Support_DC_ACL.png)
 
 We can see that an object with RID 1103 has *GenericAll* permission over the *dc* computer object. Since objects with RID > 1000 are generally user defined we should inspect what this object is.
-I tried to look to the groups of the *support* user and as we can see the group *Shared Support Accounts* is the object we were searching for. So our user has *GenericAll* through inheritance.
+I tried to look to the groups of the *support* user and as we can see the group *Shared Support Accounts* is the object we were searching for. 
+
+![diagram](../images/Support/Support_support_groups.png)
+
+So our user has *GenericAll* through inheritance.
 
 
