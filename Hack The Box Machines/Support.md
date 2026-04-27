@@ -65,6 +65,19 @@ I tried to look up the groups which our user is a member of and as we can see th
 
 ![diagram](../images/Support/Support_support_groups.png)
 
-So our user has *GenericAll* permission over the DC computer account, through group membership.
+So our user has *GenericAll* permission over the DC computer account, inherited through group membership. Thanks to this permission we can write the *msDS-AllowedToActOnBehalfOfOtherIdentity* of the DC computer object. Now i created a fake computer account using the privilege of our user:
 
+![diagram](../images/Support/Support_add_computer.png)
+
+Then, i used GenericAll to write msDS-AllowedToActOnBehalfOfOtherIdentity on the DC, pointing it to your fake computer:
+
+![diagram](../images/Support/Support_delegation.png)
+
+Then, i requested a kerberos TGS for the DC's Administrator, using your fake computer's credentials:
+
+![diagram](../images/Support/Support_TGS.png)
+
+Then, after addying the TGS to the current session we can use it for kerberos authentication on the DC as Administrator (psexec drops automatically a system shell):
+
+![diagram](../images/Support/Support_system_access.png)
 
