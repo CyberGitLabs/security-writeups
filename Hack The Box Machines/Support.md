@@ -79,5 +79,7 @@ Then, i requested a kerberos TGS for the DC's Administrator, using the fake comp
 
 Then, after addying the TGS to the current session we can use it for kerberos authentication on the DC as Administrator (psexec drops automatically a system shell):
 
+![diagram](../images/Support/Support_ticket.png)
+
 ![diagram](../images/Support/Support_system_access.png)
 
