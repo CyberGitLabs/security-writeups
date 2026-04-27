@@ -32,7 +32,7 @@ So i made the AI generate a script to copy this logic:
 
 ![diagram](../images/Support/Support_script2.png)
 
-Once we found the password i retrieved the list of users with rid-brute and then sprayed to retrieve the pair:
+Once i found the password i retrieved the list of users with rid-brute and then sprayed to retrieve the pair:
 
 ![diagram](../images/Support/Support_users.png)
 
