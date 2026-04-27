@@ -73,7 +73,7 @@ Then, i used GenericAll to write msDS-AllowedToActOnBehalfOfOtherIdentity on the
 
 ![diagram](../images/Support/Support_delegation.png)
 
-Then, i requested a kerberos TGS for the DC's Administrator, using your fake computer's credentials:
+Then, i requested a kerberos TGS for the DC's Administrator, using the fake computer's credentials:
 
 ![diagram](../images/Support/Support_TGS.png)
 
