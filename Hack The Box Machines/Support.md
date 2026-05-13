@@ -1,4 +1,4 @@
-******Support******
+# Support
 
 Support is an HTB Windows machine classified as Easy.
 
