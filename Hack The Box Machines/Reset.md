@@ -1,4 +1,4 @@
-******Reset******
+# Reset
 
 Reset is an HTB Linux machine classified as Easy.
 
