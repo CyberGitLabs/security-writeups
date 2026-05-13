@@ -1,4 +1,4 @@
-******Data******
+# Data
 
 Data is an HTB Linux machine classified as Easy.
 
