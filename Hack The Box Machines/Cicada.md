@@ -2,7 +2,7 @@
 
 Cicada is an HTB Windows machine classified as Easy.
 
-## 1 Service Enumeration
+*******1 Service Enumeration*******
 
 ![diagram](../images/Cicada/Cicada_nmap1.png)
 
