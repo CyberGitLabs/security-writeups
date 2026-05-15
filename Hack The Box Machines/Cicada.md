@@ -8,7 +8,7 @@ Cicada is an HTB Windows machine classified as Easy.
 
 ![diagram](../images/Cicada/Cicada_nmap2.png)
 
-From the running services we can say that this is very likely a domain controller. The info can be be confirmed with a more comprehensive scan.
+From the running services we can say that this is very likely a domain controller. The info can be confirmed with a more comprehensive scan.
 
 *******2 Foothold*******
 
