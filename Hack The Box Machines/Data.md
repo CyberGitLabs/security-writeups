@@ -33,7 +33,7 @@ We can interact with the database and query the users:
 
 ![diagram](../images/Data/Data_users.png)
 
-We can save the hashes and try to crack them to get the passwords. Examining them with hashid we find that the format cannot be recognized, searching online i found a tool that can transform the grafana hashes in a format recognized by hashcat.
+We can save the hashes and try to crack them to get the passwords. Examining them with hashid we find that the format cannot be recognized, searching online I found a tool that can transform the grafana hashes in a format recognized by hashcat.
 
 ![diagram](../images/Data/Data_hashes.png)
 
