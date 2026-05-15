@@ -94,8 +94,8 @@ The mount operation is succesfull and now we can access the host filesystem from
 - Define a good password policy.
 - Whitelist specific commands in the */etc/sudoers* file to be run in the container (instead of exec *)
 - Start the container more securely:
--- drop capabilities and add back only the needed ones
--- run as a non root user
--- consider read-only mode, or give write access only to specific mounted volumes
--- use the *no-new-privileges* flag.
+  - drop capabilities and add back only the needed ones
+  - run as a non root user
+  - consider read-only mode, or give write access only to specific mounted volumes
+  - use the *no-new-privileges* flag.
 
