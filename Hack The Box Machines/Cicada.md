@@ -97,5 +97,6 @@ After that we can pass the hash and access as Administrator:
 
 *******4 Remediation*******
 - Disable the SMB Null and Guest session.
-- Do not store plaintext passwords in user object descriptions and scripts.
-- Monitor high privileged account activity. 
+- Do not store plaintext passwords in user object descriptions or scripts.
+- Monitor activity for high privileged account (members of *Backup Operators*).
+- Whitelist source IP addresses for remote connections by members of *Remote Management Users*
