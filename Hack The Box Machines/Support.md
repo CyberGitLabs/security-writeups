@@ -12,11 +12,11 @@ From the running services we can say that this is a domain controller.
 
 *******2 Foothold*******
 
-Enumerating the SMB shares i found a interesting zip file *UserInfo.exe.zip* in the *support-tools* share:
+Enumerating the SMB shares I found a interesting zip file *UserInfo.exe.zip* in the *support-tools* share:
 
 ![diagram](../images/Support/Support_smbclient.png)
 
-So i downloaded it, extracted the content and started enumerating the resulting files with *strings*.
+So I downloaded it, extracted the content and started enumerating the resulting files with *strings*.
 Examining *UserInfo.exe* with *strings* we can see that is a .NET file and it contains strings like 'enc_password'.
 .NET executables compile to Intermediate Language (IL) / CIL bytecode, not native machine code.
 This make possible to decompile and reverse engineer them with specialized tools. I used *ilspycmd* to do that:
@@ -26,13 +26,13 @@ This make possible to decompile and reverse engineer them with specialized tools
 ![diagram](../images/Support/Support_ilspycmd2.png)
 
 As we can see in the class is contained the logic to decode an encrypted password.
-So i made the AI generate a script to copy this logic:
+So I made the AI generate a script to copy this logic:
 
 ![diagram](../images/Support/Support_script1.png)
 
 ![diagram](../images/Support/Support_script2.png)
 
-Once i found the password i retrieved the list of users with rid-brute and then sprayed to retrieve the pair:
+Once I found the password I retrieved the list of users with rid-brute and then sprayed to retrieve the pair:
 
 ![diagram](../images/Support/Support_users.png)
 
@@ -52,11 +52,11 @@ Now we have the credentials for the support user, and command execution:
 ![diagram](../images/Support/Support_shell.png)
 
 *******3 Privilege Escalation*******
-The first thing i did now was to check the user characteristics:
+The first thing I did now was to check the user characteristics:
 
 ![diagram](../images/Support/Support_support_user.png)
 
-The user had the privilege to add machines to the domain. This can be abused for privilege escalation through Resource-Based Constrained Delegation (RBCD) if the user also has write permissions over a target computer object in Active Directory. So in this case we should check if the user has write permission on the *dc*. I tried to query ACL using the user SID, but that didn't give any results. So i tried to query for ACL related to the *dc* computer object.
+The user had the privilege to add machines to the domain. This can be abused for privilege escalation through Resource-Based Constrained Delegation (RBCD) if the user also has write permissions over a target computer object in Active Directory. So in this case we should check if the user has write permission on the *dc*. I tried to query ACL using the user SID, but that didn't give any results. So I tried to query for ACL related to the *dc* computer object.
 
 ![diagram](../images/Support/Support_DC_ACL.png)
 
@@ -65,15 +65,15 @@ I tried to look up the groups which our user is a member of and as we can see th
 
 ![diagram](../images/Support/Support_support_groups.png)
 
-So our user has *GenericAll* permission over the DC computer account, inherited through group membership. Thanks to this permission we can write the *msDS-AllowedToActOnBehalfOfOtherIdentity* of the DC computer object. Now i created a fake computer account using the privilege of our user:
+So our user has *GenericAll* permission over the DC computer account, inherited through group membership. Thanks to this permission we can write the *msDS-AllowedToActOnBehalfOfOtherIdentity* of the DC computer object. Now I created a fake computer account using the privilege of our user:
 
 ![diagram](../images/Support/Support_add_computer.png)
 
-Then, i used GenericAll to write msDS-AllowedToActOnBehalfOfOtherIdentity on the DC, pointing it to your fake computer:
+Then, I used GenericAll to write msDS-AllowedToActOnBehalfOfOtherIdentity on the DC, pointing it to your fake computer:
 
 ![diagram](../images/Support/Support_delegation.png)
 
-Then, i requested a kerberos TGS for the DC's Administrator, using the fake computer's credentials:
+Then, I requested a kerberos TGS for the DC's Administrator, using the fake computer's credentials:
 
 ![diagram](../images/Support/Support_TGS.png)
 
