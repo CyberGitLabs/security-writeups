@@ -12,7 +12,7 @@ From the running services we can say that this is very likely a domain controlle
 
 *******2 Foothold*******
 
-Since SMB is running the first thing i did was enumerate the shares:
+Since SMB is running the first thing I did was enumerate the shares:
 
 ![diagram](../images/Cicada/Cicada_shares.png)
 
@@ -32,7 +32,7 @@ This type of user enumeration can be done also leveraging RPC or LDAP protocol, 
 
 ![diagram](../images/Cicada/Cicada_Dom_sid.png)
 
-Then we loop over the user RID, here i took a range from 500, which is the Administrator Account, to 2000 but it can be adjusted:
+Then we loop over the user RID, here I took a range from 500, which is the Administrator Account, to 2000 but it can be adjusted:
 
 ![diagram](../images/Cicada/Cicada_brte_users3.png)
 
@@ -42,8 +42,8 @@ Then let's spray the password over the found users:
 
 ![diagram](../images/Cicada/Cicada_spray.png)
 
-Good, we have found working domain user's credentials. At this point i tried to access with winrm but i couldn't. 
-To confirm i enumerated the members of the *Remote Management Users* group with rpcclient. First we have to find the group RID querying the builtin groups:
+Good, we have found working domain user's credentials. At this point I tried to access with winrm but I couldn't. 
+To confirm I enumerated the members of the *Remote Management Users* group with rpcclient. First we have to find the group RID querying the builtin groups:
 
 ![diagram](../images/Cicada/Cicada_groups1.png)
 
@@ -57,9 +57,9 @@ Then we query for the members using the group RID:
 
 Comparing with the results above we can see that the only user member of this group is *emily.oscars*.
 
-At this point i tried to follow the file's indication and change the user's password. 
+At this point I tried to follow the file's indication and change the user's password. 
 I thought that maybe after the password was changed the user could have been assigned to the groups it was supposed to belong like the *Remote Management Users*.
-But i couldn't change it, so i started to enumerate users with an ldap query, using the credentials we have:
+But I couldn't change it, so I started to enumerate users with an ldap query, using the credentials we have:
 
 ![diagram](../images/Cicada/Cicada_ldap_query.png)
 
@@ -85,8 +85,8 @@ We can see that this user is very powerfull, since is member of the *Backup Oper
 
 ![diagram](../images/Cicada/Cicada_whoami2.png)
 
-However when i tried to create shadow copies to access the NTDS.dit file i couldn't, as it requires admin privileges.
-So i tried to read the content of the SAM file and i found the Administrator hash:
+However when I tried to create shadow copies to access the NTDS.dit file I couldn't, as it requires admin privileges.
+So I tried to read the content of the SAM file and I found the Administrator hash:
 
 ![diagram](../images/Cicada/Cicada_sam.png)
 
