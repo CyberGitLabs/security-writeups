@@ -19,15 +19,15 @@ Also we can confirm that the service running on port 5986 is winrm over HTTPS (M
 
 *******2 Foothold*******
 
-Since SMB is the easier service to interact with i started with that one.
+Since SMB is the easier service to interact with I started with that one.
 
 ![diagram](../images/Timelapse/Timelapse_shares.png)
 
-The Guest user has read access over the *Shares* share. So i downloaded everything:
+The Guest user has read access over the *Shares* share. So I downloaded everything:
 
 ![diagram](../images/Timelapse/Timelapse_shares2.png)
 
-In the Dev share there is a zip file called *winrm_backup.zip*. The name suggests that has something to do with winrm, so i tried to extract it:
+In the Dev share there is a zip file called *winrm_backup.zip*. The name suggests that has something to do with winrm, so I tried to extract it:
 
 ![diagram](../images/Timelapse/Timelapse_unzip.png)
 
@@ -76,7 +76,7 @@ Now we can use the new files to try to access with evil-winrm:
 
 *******3 Post-Exploitation and Privilege Escalation*******
 
-We are logged in with the *legacyy* user. The first thing i did was try to see which privileges he had:
+We are logged in with the *legacyy* user. The first thing I did was try to see which privileges he had:
 
 ![diagram](../images/Timelapse/Timelapse_legacyywhoami1.png)
 
@@ -85,7 +85,7 @@ We are logged in with the *legacyy* user. The first thing i did was try to see w
 Beside being part of the *Remote Management Users* group, the privileges and groups are the ones assigned usually to normal users.
 Going ahead with internal enumeration we can see that this user doesn't have many permissions and have access to few resources.
 
-However i remembered that we had the *Helpdesk* folder in the share which we didn't use yet (to access we used only the content of the *Dev* folder).
+However I remembered that we had the *Helpdesk* folder in the share which we didn't use yet (to access we used only the content of the *Dev* folder).
 *Helpdesk* contains Microsoft documentation about LAPS (Local Administrator Password Solution) and the installer file. LAPS is a Microsoft solution that automatically manages and rotates the local Administrator password on domain-joined machines. The password of the local administrator is written as a plaintext attribute *ms-Mcs-AdmPwd* on the computer object. Inspecting the documentation we can read that a component called CSE is installed by default when running the installer and the main binary will be located at: *C:\Program Files\LAPS\CSE\AdmPwd.dll*. We can see that this binary is present on the machine so LAPS should be installed. We can try to read the *ms-Mcs-AdmPwd* property with this command:
 
 ![diagram](../images/Timelapse/Timelapse_getAdmPwd.png)
