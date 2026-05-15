@@ -86,6 +86,7 @@ Then, after addying the TGS to the current session we can use it for kerberos au
 *******4 Remediation*******
 - Disable the SMB and RPC Null and Guest session.
 - Do not store plaintext passwords in user object description or info.
+- Do not share .NET binaries with hardcoded user credentials.
 - Monitor activity for high privileged account (members of *Remote Management Users* and *SUPPORT\Shared Support Accounts*).
 - Whitelist source IP addresses for remote connections by members of *Remote Management Users* and *SUPPORT\Shared Support Accounts*.
 - Remove the *GenericAll* ACL permission for the *DC* object for the *SUPPORT\Shared Support Accounts*. If not you should consider this account as high risk (same level of *Domain Admins*) and apply further protective measures, like the ones mentioned above and *MFA*.
