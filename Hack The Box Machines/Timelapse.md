@@ -116,5 +116,10 @@ Now we can access with *svc_deploy* and read the *Administrator* password:
 
 Then we can access as Administrator.
 
-
+*******4 Remediation*******
+- Disable the SMB Null and Guest session.
+- Enforce a strong password policy.
+- Whitelist source IP addresses for remote connections by members of Remote Management Users.
+- Turn Off Powershell History.
+- Consider members of the *LAPS_Readers* group as high value and apply additional measures to protect them, like MFA.
 
