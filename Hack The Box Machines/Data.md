@@ -89,3 +89,13 @@ The mount operation is succesfull and now we can access the host filesystem from
 
 ![diagram](../images/Data/Data_esc2.png)
 
+*******4 Remediation*******
+- Keep Grafana up to date.
+- Define a good password policy.
+- Whitelist specific commands in the */etc/sudoers* file to be run in the container (instead of exec *)
+- Start the container more securely:
+-- drop capabilities and add back only the needed ones
+-- run as a non root user
+-- consider read-only mode, or give write access only to specific mounted volumes
+-- use the *no-new-privileges* flag.
+
