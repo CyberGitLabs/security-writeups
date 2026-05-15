@@ -98,3 +98,4 @@ After that we can pass the hash and access as Administrator:
 *******4 Remediation*******
 - Disable the SMB Null and Guest session.
 - Do not store plaintext passwords in user object descriptions and scripts.
+- Monitor high privileged account activity. 
