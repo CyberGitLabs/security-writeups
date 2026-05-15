@@ -93,3 +93,8 @@ So I tried to read the content of the SAM file and I found the Administrator has
 After that we can pass the hash and access as Administrator:
 
 ![diagram](../images/Cicada/Cicada_admin.png)
+
+
+*******4 Remediation*******
+- Disable the SMB Null and Guest session.
+- Do not store plaintext passwords in user object descriptions and scripts.
