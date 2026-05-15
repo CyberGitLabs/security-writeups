@@ -118,8 +118,9 @@ Then we can access as Administrator.
 
 *******4 Remediation*******
 - Disable the SMB Null and Guest session.
+- Do not store sensitive files (certificates, private keys, backups) on publicly accessible SMB shares.
 - Enforce a strong password policy.
 - Whitelist source IP addresses for remote connections by members of *Remote Management Users*.
-- Turn Off Powershell History.
-- Consider members of the *LAPS_Readers* group as high value and apply additional measures to protect them, like MFA.
+- Clear PowerShell history after sensitive operations, or configure PSReadLine via GPO to not persist history for privileged accounts. Avoid running commands with plaintext credentials in interactive shells.
+- Consider members of the *LAPS_Readers* group as high value and apply additional measures to protect them, like MFA ,auditing and alerts for sensitive actions.
 
