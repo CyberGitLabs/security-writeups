@@ -98,4 +98,12 @@ With this final payload I got the root shell on my listener:
 
 ![diagram](../images/CodePartTwo/CodePartTwo_escpayload2.png)
 
+*******4 Remediation*******
+- Do not expose vulnerable services on external interfaces (the features of the service running on port 8000 suggest its identification as a development platform). Use internal networks only.
+- Keep Libraries up to date.
+- Do not globally expose source code running in reachable environment.
+- Set up a good password policy, strong encryption algorithms and avoid password reuse.
+- Specify the exact command the users can run with sudo in the /etc/sudoers file. 
+
+
 I hope you enjoyed, Bye.
