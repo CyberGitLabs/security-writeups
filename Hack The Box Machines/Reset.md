@@ -91,5 +91,5 @@ Following the procedure we get a shell as root:
   - Whitelist log files that can be accessed by the web application allowing only *syslog* and *auth.log*.
   - Do not add the web server user to the adm group. If the application needs to read specific log files (*syslog* and *auth.log*), create a dedicated group with access only to those files instead of granting broad log-reading permissions.
   - Avoid using include() to render file content controlled by user input. Use file_get_contents() instead.
-  - Set open_basedir in php.ini to restrict PHP file access to the webroot directory only.
+  - Set open_basedir in php.ini to restrict PHP file access only to the needed directories.
 - Avoid granting sudo access to GTFOBins like *nano*.
