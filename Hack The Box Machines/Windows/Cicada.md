@@ -1,8 +1,15 @@
 # Cicada
 
+## 0 Information
+
 Cicada is an HTB Windows machine classified as Easy.
 
-*******1 Service Enumeration*******
+Notable Topics:
+  - SMB Shares
+  - Ldap Queries
+  - SeBackupPrivilege
+
+## 1 Service Enumeration
 
 ![diagram](../../images/Cicada/Cicada_nmap1.png)
 
@@ -10,7 +17,7 @@ Cicada is an HTB Windows machine classified as Easy.
 
 From the running services we can say that this is very likely a domain controller. The info can be confirmed with a more comprehensive scan.
 
-*******2 Foothold*******
+## 2 Foothold
 
 Since SMB is running the first thing I did was enumerate the shares:
 
@@ -30,13 +37,13 @@ Nice, we already obtained a clear text password. Now let's try to enumerate the 
 
 This type of user enumeration can be done also leveraging RPC or LDAP protocol, if null sessions are enabled or if you already have credentials. Let's see how to do it with rpcclient. First we retrieve the domain SID:
 
-![diagram](../images/Cicada/Cicada_Dom_sid.png)
+![diagram](../../images/Cicada/Cicada_Dom_sid.png)
 
 Then we loop over the user RID, here I took a range from 500, which is the Administrator Account, to 2000 but it can be adjusted:
 
-![diagram](../images/Cicada/Cicada_brte_users3.png)
+![diagram](../../images/Cicada/Cicada_brte_users3.png)
 
-![diagram](../images/Cicada/Cicada_brte_users4.png)
+![diagram](../../images/Cicada/Cicada_brte_users4.png)
 
 Then let's spray the password over the found users:
 
@@ -75,9 +82,9 @@ And downloading and reading the powershell script we retrieve the *emily.oscars*
 
 ![diagram](../../images/Cicada/Cicada_script2.png)
 
-We know already that this user is member of *Remote Management Users* so we can access via evil-winrm.
+We know already that this user is a member of *Remote Management Users* so we can access via evil-winrm.
 
-*******3 Privilege Escalation*******
+## 3 Privilege Escalation
 
 We can see that this user is very powerfull, since is member of the *Backup Operators* too and has *SeBackupPrivilege* and *SeRestorePrivilege*:
 
@@ -86,7 +93,7 @@ We can see that this user is very powerfull, since is member of the *Backup Oper
 ![diagram](../../images/Cicada/Cicada_whoami2.png)
 
 However when I tried to create shadow copies to access the NTDS.dit file I couldn't, as it requires admin privileges.
-So I tried to read the content of the SAM file and I found the Administrator hash:
+So I dumped the SAM and SYSTEM hives and ran *secretsdump* against them to extract the Administrator hash.:
 
 ![diagram](../../images/Cicada/Cicada_sam.png)
 
@@ -95,7 +102,7 @@ After that we can pass the hash and access as Administrator:
 ![diagram](../../images/Cicada/Cicada_admin.png)
 
 
-*******4 Remediation*******
+## 4 Remediation
 - Disable the SMB and RPC Null and Guest session.
 - Do not store plaintext passwords in user object descriptions or scripts.
 - Monitor activity for high privileged account (members of *Backup Operators*).

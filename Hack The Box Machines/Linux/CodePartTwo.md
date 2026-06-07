@@ -1,8 +1,14 @@
 # CodePartTwo
 
+## 0 Information
+
 CodePartTwo is an HTB Linux machine classified as Easy.
 
-*******1 Service Enumeration*******
+Notable Topics:
+  - Exposed Vulnerable application
+  - Sudo permission on a GTFOBin
+
+## 1 Service Enumeration
 
 I always feel safer if I can do an overall port scan. So if the process is fast enough I try it:
 
@@ -16,7 +22,7 @@ I tried to fingerprint the services.
 
 This didn't give too much information, so at this point I visited the web service with the browser.
 
-*******2 Searching the Foothold*******
+## 2 Foothold
 
 On the web page we have the option to register, login or download the app source code.
 
@@ -35,12 +41,12 @@ Looking at app.py, this is the flask route which lets us run the code:
 We can see that the code we submit in the browser is posted on this route on the backend, then is run with the js2py.eval_js function.
 This function is used to execute Javascript code in a python context (such as app.py) and return the last expression.
 Is used, among other things, in web scraping.
-Since this library can only execute JS code, I didn't see an attack angle unless it had vulnerable versions.
+Since this library can only execute JS code, I didn't see an attack angle unless it were vulnerable versions.
 So I searched for a vulnerability:
 
 ![diagram](../../images/CodePartTwo/CodePartTwo_vuln.png)
 
-CVE-2024-28397 allow an attacker to brake the JS sandbox and run commands in the python environment. So we may be able to execute code if we are in the right circumnstances.
+CVE-2024-28397 allow an attacker to break the JS sandbox and run commands in the python environment. So we may be able to execute code if we are in the right circumnstances.
 The vulnerability requirements are:
 
 ![diagram](../../images/CodePartTwo/CodePartTwo_vulnreq.png)
@@ -54,7 +60,7 @@ The library version is vulnerable, also the app is running flask 3.0.3 which sup
 Using the specific PoC for this vulnerability, adjusted with some trial and error you should be able to get RCE as the "app" user.
 
 
-*******3 Lateral Movement*******
+## 3 Lateral Movement
 
 The only two users having a home directory are "app" and "marco".
 Having the shell as "app", the first thing I did was "sudo -l", but the user wasn't able to run sudo.
@@ -69,13 +75,13 @@ These are md5 hashes (which can be confirmed also looking at the app source code
 ![diagram](../../images/CodePartTwo/CodePartTwo_john.png)
 
 
-*******4 Privilege Escalation*******
+## 4 Privilege Escalation
 
 With the marco user and its cute password we can access through ssh, and we can run "sudo -l":
 
 ![diagram](../../images/CodePartTwo/CodePartTwo_sudo.png)
 
-This time marco can run the command **/usr/local/bin/npbackup-cli** with sudo. I didn't know this executable so I searched some info. It is an executable for managing backups. With **npbackup-cli --help**, we can see that the **raw** option allow us to run commands "against the backend".
+This time marco can run the command **/usr/local/bin/npbackup-cli** with sudo. I didn't know this executable so I searched some info. It is an executable for managing backups. With **npbackup-cli --help**, we can see that the **raw** option allows us to run commands "against the backend".
 
 ![diagram](../../images/CodePartTwo/CodePartTwo_npbackuphelp.png)
 
@@ -98,7 +104,7 @@ With this final payload I got the root shell on my listener:
 
 ![diagram](../../images/CodePartTwo/CodePartTwo_escpayload2.png)
 
-*******4 Remediation*******
+## 5 Remediation
 - Do not expose vulnerable services on external interfaces (the features of the service running on port 8000 suggest it is a development platform). Use internal networks only.
 - Sandbox running services in containers.
 - Do not globally expose source code running in reachable environment.

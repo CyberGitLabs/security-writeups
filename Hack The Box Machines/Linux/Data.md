@@ -1,8 +1,15 @@
 # Data
 
+## 0 Information
+
 Data is an HTB Linux machine classified as Easy.
 
-*******1 Service Enumeration*******
+Notable Topics:
+  - Public CVE
+  - Sudo permission on a GTFOBin
+  - Container Escape
+
+## 1 Service Enumeration
 
 Doing a full tcp port scan we can see that the machine has only two open ports 22 and 3000:
 
@@ -13,7 +20,7 @@ While 22 is hosting the ssh service, we can see that on port 3000 is running Gra
 ![diagram](../../images/Data/Data_Grafana.png)
 
 
-*******2 Foothold*******
+## 2 Foothold
 
 This version of Grafana has a path traversal vulnerability which results in Local File Inclusion, allowing us to access files in the target operating system which can be accessed by the user running the Grafana Service.
 
@@ -25,7 +32,7 @@ But the same result can be obtained making the following request with curl:
 
 **curl `http://10.129.234.47:3000/public/plugins/stat/../../../../../../../../../../../../../../../../var/lib/grafana/grafana.db` --path-as-is -o file_db**
 
-Checking the type of the .db file we can see that is a Sqlite3 file:
+Checking the type of the .db file we can see that it is a Sqlite3 file:
 
 ![diagram](../../images/Data/Data_dbfile.png)
 
@@ -47,19 +54,19 @@ We retrieved the password "beutiful1". Using it with the user boris we can acces
 
 ![diagram](../../images/Data/Data_bob.png)
 
-So now we got a shell. One thing we can notice is that if we try to read /etc/passwd wit the local file inclusion vulnerability we don't see the boris user:
+So now we got a shell. One thing we can notice is that if we try to read /etc/passwd with the local file inclusion vulnerability we don't see the boris user:
 
 ![diagram](../../images/Data/Data_passwd.png)
 
 and the content differs from the /etc/passwd file we can read in the boris shell. This means that the Grafana application is likely running in a container.
 
-*******3 Privilege Escalation*******
+## 3 Privilege Escalation
 
 The user can run the following command as sudo:
 
 ![diagram](../../images/Data/Data_sudo.png)
 
-This command allow a user to "Run a command in a running container":
+This command allows a user to "Run a command in a running container":
 
 ![diagram](../../images/Data/Data_docker_exec.png)
 
@@ -69,7 +76,7 @@ However it requires the container id which we want to run a command in. Our user
 
 Now we can run the command. Because of the wildcard we can add whatever argument we want to the command, so we try to spawn a shell inside the container as the root user:
 
-![diagram](../images/Data/Data_docker_root.png)
+![diagram](../../images/Data/Data_docker_root.png)
 
 We have root privileges inside the container, so we only have to escape the container environment to acquire root privileges on the host. If we enumerate the capabilities we find:
 
@@ -80,16 +87,16 @@ This field is computed based on other Cap fields and the kernel checks it (at sy
 
 ![diagram](../../images/Data/Data_Cap2.png)
 
-We can see that the set of effective capabilities comprises CAP_SYS_ADMIN a capability that allow us to mount the file system and manipulate namespaces. 
+We can see that the set of effective capabilities comprises CAP_SYS_ADMIN a capability that allows us to mount the file system and manipulate namespaces. 
 So we see that we can mount /dev/sda1, the host root partition, to a new directory inside the container and move there.
 
 ![diagram](../../images/Data/Data_esc.png)
 
-The mount operation is succesfull and now we can access the host filesystem from inside the container where we have full root privileges. From here we can manipulate every file of the host and gain real root privileges.
+The mount operation is succesful and now we can access the host filesystem from inside the container where we have full root privileges. From here we can manipulate every file of the host and gain real root privileges.
 
 ![diagram](../../images/Data/Data_esc2.png)
 
-*******4 Remediation*******
+## 4 Remediation
 - Keep Grafana up to date.
 - Define a good password policy.
 - Whitelist specific commands in the */etc/sudoers* file to be run in the container (instead of exec *)

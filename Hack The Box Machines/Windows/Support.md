@@ -1,8 +1,17 @@
 # Support
 
+## 0 Information
+
 Support is an HTB Windows machine classified as Easy.
 
-*******1 Service Enumeration*******
+Notable Topics:
+  - SMB Shares
+  - .NET files inspection
+  - Ldap Queries
+  - ACL (Access control lists)
+  - RBCD (Resource based constrained delegation)
+
+## 1 Service Enumeration
 
 ![diagram](../../images/Support/Support_nmap1.png)
 
@@ -10,16 +19,16 @@ Support is an HTB Windows machine classified as Easy.
 
 From the running services we can say that this is a domain controller.
 
-*******2 Foothold*******
+## 2 Foothold
 
-Enumerating the SMB shares I found a interesting zip file *UserInfo.exe.zip* in the *support-tools* share:
+Enumerating the SMB shares I found an interesting zip file *UserInfo.exe.zip* in the *support-tools* share:
 
 ![diagram](../../images/Support/Support_smbclient.png)
 
 So I downloaded it, extracted the content and started enumerating the resulting files with *strings*.
 Examining *UserInfo.exe* with *strings* we can see that is a .NET file and it contains strings like 'enc_password'.
 .NET executables compile to Intermediate Language (IL) / CIL bytecode, not native machine code.
-This make possible to decompile and reverse engineer them with specialized tools. I used *ilspycmd* to do that:
+This makes possible to decompile and reverse engineer them with specialized tools. I used *ilspycmd* to do that:
 
 ![diagram](../../images/Support/Support_ilspycmd1.png)
 
@@ -51,7 +60,8 @@ Now we have the credentials for the support user, and command execution:
 
 ![diagram](../../images/Support/Support_shell.png)
 
-*******3 Privilege Escalation*******
+## 3 Privilege Escalation
+
 The first thing I did now was to check the user characteristics:
 
 ![diagram](../../images/Support/Support_support_user.png)
@@ -77,13 +87,14 @@ Then, I requested a kerberos TGS for the DC's Administrator, using the fake comp
 
 ![diagram](../../images/Support/Support_TGS.png)
 
-Then, after addying the TGS to the current session we can use it for kerberos authentication on the DC as Administrator (psexec drops automatically a system shell):
+Then, after adding the TGS to the current session we can use it for kerberos authentication on the DC as Administrator (psexec drops automatically a system shell):
 
 ![diagram](../../images/Support/Support_ticket.png)
 
 ![diagram](../../images/Support/Support_system_access.png)
 
-*******4 Remediation*******
+## 4 Remediation
+
 - Disable the SMB and RPC Null and Guest session.
 - Do not store plaintext passwords in user object description or info.
 - Do not share .NET binaries with hardcoded user credentials.

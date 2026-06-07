@@ -1,8 +1,15 @@
 # Timelapse
 
+## 0 Information
+
 Timelapse is an HTB Windows machine classified as Easy.
 
-*******1 Service Enumeration*******
+Notable Topics:
+  - SMB Shares
+  - Client certificates
+  - LAPS (Local Administrator Password Solution)
+
+## 1 Service Enumeration
 
 ![diagram](../../images/Timelapse/Timelapse_nmap1.png)
 
@@ -17,7 +24,7 @@ I tried to get more information with the version scan + default scripts scan.
 From this scan we have obtained the domain name *timelaps.htb* and the FQDN of the machine *dc01.timelaps.htb*. We can add them to /etc/hosts assigned to the machine IP.
 Also we can confirm that the service running on port 5986 is winrm over HTTPS (Microsoft HTTPAPI).
 
-*******2 Foothold*******
+## 2 Foothold
 
 Since SMB is the easier service to interact with I started with that one.
 
@@ -27,17 +34,17 @@ The Guest user has read access over the *Shares* share. So I downloaded everythi
 
 ![diagram](../../images/Timelapse/Timelapse_shares2.png)
 
-In the Dev share there is a zip file called *winrm_backup.zip*. The name suggests that has something to do with winrm, so I tried to extract it:
+In the Dev share there is a zip file called *winrm_backup.zip*. The name suggests that it has something to do with winrm, so I tried to extract it:
 
 ![diagram](../../images/Timelapse/Timelapse_unzip.png)
 
 It's password protected, we have to extract the hash, crack it and then use the resulting password to extract the zip file:
 
-![diagram](../images/Timelapse/Timelapse_zip2john.png)
+![diagram](../../images/Timelapse/Timelapse_zip2john.png)
 
-![diagram](../images/Timelapse/Timelapse_john1.png)
+![diagram](../../images/Timelapse/Timelapse_john1.png)
 
-![diagram](../images/Timelapse/Timelapse_unzip2.png)
+![diagram](../../images/Timelapse/Timelapse_unzip2.png)
 
 The zip contained a .pfx file.
 
@@ -74,7 +81,7 @@ Now we can use the new files to try to access with evil-winrm:
 ![diagram](../../images/Timelapse/Timelapse_legacyyauth.png)
 
 
-*******3 Post-Exploitation and Privilege Escalation*******
+## 3 Post-Exploitation and Privilege Escalation
 
 We are logged in with the *legacyy* user. The first thing I did was try to see which privileges he had:
 
@@ -83,7 +90,7 @@ We are logged in with the *legacyy* user. The first thing I did was try to see w
 ![diagram](../../images/Timelapse/Timelapse_legacyywhoami2.png)
 
 Beside being part of the *Remote Management Users* group, the privileges and groups are the ones assigned usually to normal users.
-Going ahead with internal enumeration we can see that this user doesn't have many permissions and have access to few resources.
+Going ahead with internal enumeration we can see that this user doesn't have many permissions and has access to few resources.
 
 However I remembered that we had the *Helpdesk* folder in the share which we didn't use yet (to access we used only the content of the *Dev* folder).
 *Helpdesk* contains Microsoft documentation about LAPS (Local Administrator Password Solution) and the installer file. LAPS is a Microsoft solution that automatically manages and rotates the local Administrator password on domain-joined machines. The password of the local administrator is written as a plaintext attribute *ms-Mcs-AdmPwd* on the computer object. Inspecting the documentation we can read that a component called CSE is installed by default when running the installer and the main binary will be located at: *C:\Program Files\LAPS\CSE\AdmPwd.dll*. We can see that this binary is present on the machine so LAPS should be installed. We can try to read the *ms-Mcs-AdmPwd* property with this command:
@@ -116,11 +123,11 @@ Now we can access with *svc_deploy* and read the *Administrator* password:
 
 Then we can access as Administrator.
 
-*******4 Remediation*******
+## 4 Remediation
 - Disable the SMB Null and Guest session.
 - Do not store sensitive files (certificates, private keys, backups) on publicly accessible SMB shares.
 - Enforce a strong password policy.
 - Whitelist source IP addresses for remote connections by members of *Remote Management Users*.
 - Clear PowerShell history after sensitive operations, or configure PSReadLine via GPO to not persist history for privileged accounts. Avoid running commands with plaintext credentials in interactive shells.
-- Consider members of the *LAPS_Readers* group as high value and apply additional measures to protect them, like MFA,auditing and alerts for sensitive actions.
+- Consider members of the *LAPS_Readers* group as high value and apply additional measures to protect them, like MFA, auditing and alerts for sensitive actions.
 

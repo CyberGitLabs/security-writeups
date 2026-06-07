@@ -1,8 +1,16 @@
 # Reset
 
+## 0 Information
+
 Reset is an HTB Linux machine classified as Easy.
 
-*******1 Service Enumeration*******
+Notable Topics:
+  - Leaked Credentials
+  - Log Poisoning
+  - Log Inspection
+  - Sudo permission on a GTFOBin
+
+## 1 Service Enumeration
 
 As always, approaching this machine I did a full TCP scan.
 
@@ -11,13 +19,13 @@ As always, approaching this machine I did a full TCP scan.
 The scan result shows, beside ssh and http, three interesting services: rsh, rlogin and rexec. I tried for a while to check misconfigurations on those, but I couldn't find anything. 
 Then I moved to the http web server.
 
-*******2 Foothold*******
+## 2 Foothold
 
 Navigating to the target we can see an admin login portal:
 
 ![diagram](../../images/Reset/Reset_admin_portal.png)
 
-Trying the some users with the change password functionality, we can find the user *admin*.
+Trying some users with the change password functionality, we can find the user *admin*.
 
 ![diagram](../../images/Reset/Reset_rest_password.png)
 
@@ -29,7 +37,7 @@ Examining the response we can see that the new password value is sent in the res
 
 ![diagram](../../images/Reset/Reset_rest_response.png)
 
-So now we have the credentials to access the web appplication. From within we can see that we are provided with the functionality to view logs:
+So now we have the credentials to access the web application. From within we can see that we are provided with the functionality to view logs:
 
 ![diagram](../../images/Reset/Reset_logs2.png)
 
@@ -57,7 +65,7 @@ So we can use the following request to get a reverse shell:
 
 ![diagram](../../images/Reset/Reset_shell.png)
 
-*******3 Privilege Escalation*******
+## 3 Privilege Escalation
 
 The *www-data* user is also a member of the *adm* group, this group can read logs (as we could infer from what we have done so far).
 In the system are present 2 users: *local* and *sadm*.
@@ -65,7 +73,7 @@ Since from my internal enumeration I found that *sadm* was allowed to run rsh co
 ![diagram](../../images/Reset/Reset_grep_logs.png)
 
 This will output all the content which includes *sadm*, recursively from all the files included in this folder and its subfolders.
-The file audit.log, depending on the configuration can contain different events, in this case recorded system calls with also commands. Some of the commands where encoded in hex format.
+The file audit.log, depending on the configuration can contain different events, in this case recorded system calls with also commands. Some of the commands were encoded in hex format.
 Decoding one of these commands I could retrieve the password of the *sadm* user:
 
 ![diagram](../../images/Reset/Reset_sadm_pass.png)
@@ -83,7 +91,7 @@ Following the procedure we get a shell as root:
 
 ![diagram](../../images/Reset/Reset_root.png)
 
-*******4 Remediation*******
+## 4 Remediation
 
 - Secure the Web Application:
   - The feedback message from the *Reset Password* functionality shouldn't distinguish between existing and not existing users.
