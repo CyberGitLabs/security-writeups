@@ -1,6 +1,6 @@
 # Retro
 
-## 0 Information
+## Information
 
 Retro is an HTB Windows machine classified as Easy.
 

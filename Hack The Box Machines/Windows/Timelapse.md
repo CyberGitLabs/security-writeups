@@ -1,6 +1,6 @@
 # Timelapse
 
-## 0 Information
+## Information
 
 Timelapse is an HTB Windows machine classified as Easy.
 

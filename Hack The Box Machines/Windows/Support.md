@@ -1,6 +1,6 @@
 # Support
 
-## 0 Information
+## Information
 
 Support is an HTB Windows machine classified as Easy.
 

@@ -1,6 +1,6 @@
 # Cicada
 
-## 0 Information
+## Information
 
 Cicada is an HTB Windows machine classified as Easy.
 

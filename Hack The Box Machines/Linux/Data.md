@@ -1,6 +1,6 @@
 # Data
 
-## 0 Information
+## Information
 
 Data is an HTB Linux machine classified as Easy.
 

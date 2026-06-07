@@ -1,6 +1,6 @@
 # CodePartTwo
 
-## 0 Information
+## Information
 
 CodePartTwo is an HTB Linux machine classified as Easy.
 

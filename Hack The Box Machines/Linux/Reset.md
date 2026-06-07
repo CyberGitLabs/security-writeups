@@ -1,6 +1,6 @@
 # Reset
 
-## 0 Information
+## Information
 
 Reset is an HTB Linux machine classified as Easy.
 
