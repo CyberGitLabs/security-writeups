@@ -14,7 +14,7 @@ Notable Topics:
 
 As always, approaching this machine I did a full TCP scan.
 
-![diagram](../../images/Reset/Reset_nmap.png)
+![diagram](../images/Reset/Reset_nmap.png)
 
 The scan result shows, beside ssh and http, three interesting services: rsh, rlogin and rexec. I tried for a while to check misconfigurations on those, but I couldn't find anything. 
 Then I moved to the http web server.
