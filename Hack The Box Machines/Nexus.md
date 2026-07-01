@@ -70,7 +70,7 @@ and then it write to a file based on this path without validating it:
 
 Git stores everything as objects identified by a SHA hash:
 - blob = raw file contents (no name, no permissions).
-- tree = a directory listing. Each entry is a line of the form "**mode** **type** **sha**\t**name**" linking a name + permissions to a blob (file) or another tree (subdirectory).
+- tree = a directory listing. Each entry is a line of the form "**mode** **type** **sha**	**name**" linking a name + permissions to a blob (file) or another tree (subdirectory).
 - commit = a snapshot pointing at one top-level tree, plus metadata (message, parent, author).
 
 In everyday use these objects are built for you: **git add** creates the blob and stages the path, and the tree objects are assembled automatically when you commit. 
@@ -79,7 +79,7 @@ The filename of a file is not stored in the blob — it only exists as the name 
 
 The command **git ls-tree -r HEAD** lists the contents of the tree at the latest commit (HEAD):
 - -r = recurse into subdirectories, so it prints every file's full path rather than just top-level entries.
-- Output is one line per file: **mode** **blob** **sha**\t**full/path/to/file**.
+- Output is one line per file: **mode** **blob** **sha**	**full/path/to/file**.
 
 ### Exploitation
 
